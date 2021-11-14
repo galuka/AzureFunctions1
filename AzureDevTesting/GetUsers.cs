@@ -1,15 +1,16 @@
 using AzureDevTesting.Business.Providers.Users;
+using AzureDevTesting.Functions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
+using System.Threading.Tasks;
 
 namespace AzureDevTesting
 {
-    public class GetUsers
+    public class GetUsers : AzureFunctionsBase
     {
         private readonly IUserProvider userProvider;
 
@@ -19,7 +20,7 @@ namespace AzureDevTesting
         }
 
         [FunctionName("GetUser")]
-        public IActionResult Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "get",
@@ -29,20 +30,11 @@ namespace AzureDevTesting
         {
             log.LogInformation("HTTP request: get user.");
 
-            var idParamValue = req.Query["id"];
-            int.TryParse(idParamValue, out int id);
-            if (id == 0)
-            {
-                throw new Exception($"Cannot parse user id from '{idParamValue}' value. Please make sure you specify 'id' query param with valid value.");
-            }
+            var id = GetIdFromRequest(req);
+            var user = await userProvider.Get(id);
+            var json = JsonConvert.SerializeObject(user, Formatting.Indented);
 
-            var json = JsonConvert.SerializeObject(new
-            {
-                users = userProvider.Get(id)
-            });
-
-            return (ActionResult)new OkObjectResult(json);
+            return new OkObjectResult(json);
         }
-
     }
 }

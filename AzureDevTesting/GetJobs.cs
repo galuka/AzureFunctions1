@@ -1,34 +1,40 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using AzureDevTesting.Business.Providers.Jobs;
+using AzureDevTesting.Functions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace AzureDevTesting
 {
-    public static class GetJobs
+    public class GetJobs : AzureFunctionsBase
     {
-        [FunctionName("GetJobs")]
-        public static IActionResult Run(
+        private readonly IJobProvider jobProvider;
+
+        public GetJobs(IJobProvider jobProvider)
+        {
+            this.jobProvider = jobProvider;
+        }
+
+        [FunctionName("GetJob")]
+        public async Task<IActionResult> Run(
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "get",
-                Route = "jobs")
+                Route = "job")
             ] HttpRequest req,
                 ILogger log)
         {
-            log.LogInformation("HTTP request: get jobs.");
+            log.LogInformation("HTTP request: get job.");
 
-            var json = JsonConvert.SerializeObject(new
-            {
-                jobs = new object()
-            });
+            var id = GetIdFromRequest(req);
+            var job = await jobProvider.Get(id);
+            var json = JsonConvert.SerializeObject(job, Formatting.Indented);
 
-            return (ActionResult)new OkObjectResult(json);
+            return new OkObjectResult(json);
         }
 
     }

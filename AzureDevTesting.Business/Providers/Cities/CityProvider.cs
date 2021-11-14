@@ -1,14 +1,16 @@
 ﻿using AzureDevTesting.Data.Entities;
+using System.Threading.Tasks;
 
 namespace AzureDevTesting.Business.Providers.Cities
 {
-    public class CityProvider : EntityProvider<City>, ICityProvider
+    public class CityProvider : EntityProviderBase<City>, ICityProvider
     {
-        public City Get(int id)
+        public async Task<City> Get(int id)
         {
             string sql = $"SELECT * FROM City WHERE Id={id}";
+            var city = await QuerySingle(sql);
 
-            return QuerySingle(sql);
+            return city;
         }
     }
 }

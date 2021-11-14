@@ -1,34 +1,40 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using AzureDevTesting.Business.Providers.Departments;
+using AzureDevTesting.Functions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace AzureDevTesting
 {
-    public static class GetDepartments
+    public class GetDepartments : AzureFunctionsBase
     {
-        [FunctionName("GetDepartments")]
-        public static IActionResult Run(
+        private readonly IDepartmentProvider departmentProvider;
+
+        public GetDepartments(IDepartmentProvider departmentProvider)
+        {
+            this.departmentProvider = departmentProvider;
+        }
+
+        [FunctionName("GetDepartment")]
+        public async Task<IActionResult> Run(
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "get",
-                Route = "departments")
+                Route = "department")
             ] HttpRequest req,
                 ILogger log)
         {
-            log.LogInformation("HTTP request: get departments.");
+            log.LogInformation("HTTP request: get department.");
 
-            var json = JsonConvert.SerializeObject(new
-            {
-                departments = new object()
-            });
+            var id = GetIdFromRequest(req);
+            var department = await departmentProvider.Get(id);
+            var json = JsonConvert.SerializeObject(department, Formatting.Indented);
 
-            return (ActionResult)new OkObjectResult(json);
+            return new OkObjectResult(json);
         }
     }
 }

@@ -1,15 +1,16 @@
 using AzureDevTesting.Business.Providers.Cities;
+using AzureDevTesting.Functions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
+using System.Threading.Tasks;
 
 namespace AzureDevTesting
 {
-    public class GetCities
+    public class GetCities : AzureFunctionsBase
     {
         private readonly ICityProvider cityProvider;
 
@@ -19,7 +20,7 @@ namespace AzureDevTesting
         }
 
         [FunctionName("GetCity")]
-        public IActionResult Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "get",
@@ -29,17 +30,9 @@ namespace AzureDevTesting
         {
             log.LogInformation("HTTP request: get city.");
 
-            var idParamValue = req.Query["id"];
-            int.TryParse(idParamValue, out int id);
-            if (id == 0)
-            {
-                throw new Exception($"Cannot parse city id from '{idParamValue}' value. Please make sure you specify 'id' query param with valid value.");
-            }
-
-            var json = JsonConvert.SerializeObject(new
-            {
-                cities = cityProvider.Get(id)
-            }) ;
+            var id = GetIdFromRequest(req);
+            var city = await cityProvider.Get(id);
+            var json = JsonConvert.SerializeObject(city, Formatting.Indented);
 
             return new OkObjectResult(json);
         }

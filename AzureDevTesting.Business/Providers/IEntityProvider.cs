@@ -1,7 +1,9 @@
-﻿namespace AzureDevTesting.Business.Providers
+﻿using System.Threading.Tasks;
+
+namespace AzureDevTesting.Business.Providers
 {
     public interface IEntityProvider<T>
     {
-        T Get(int id);
+        Task<T> Get(int id);
     }
 }
