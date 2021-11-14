@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureDevTesting.Functions", "AzureDevTesting\AzureDevTesting.Functions.csproj", "{769F6367-E47F-4BFC-90A4-C85F30A73856}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureDevTesting.Business", "DataAccess\AzureDevTesting.Business.csproj", "{2CE99315-31C8-46BE-86D6-F71D1CAB3438}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureDevTesting.Business", "AzureDevTesting.Business\AzureDevTesting.Business.csproj", "{2CE99315-31C8-46BE-86D6-F71D1CAB3438}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureDevTesting.Data", "AzureDevTesting.Data\AzureDevTesting.Data.csproj", "{C9022AB5-F3E2-49FF-9420-B05A36E670C0}"
 EndProject

@@ -13,4 +13,8 @@
     <ProjectReference Include="..\AzureDevTesting.Data\AzureDevTesting.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Providers\Users\" />
+  </ItemGroup>
+
 </Project>

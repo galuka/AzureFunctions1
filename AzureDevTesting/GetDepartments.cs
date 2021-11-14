@@ -25,7 +25,7 @@ namespace AzureDevTesting
 
             var json = JsonConvert.SerializeObject(new
             {
-                departments = Database.GetDepartments()
+                departments = new object()
             });
 
             return (ActionResult)new OkObjectResult(json);

@@ -10,8 +10,8 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AzureDevTesting.Business\AzureDevTesting.Business.csproj" />
     <ProjectReference Include="..\AzureDevTesting.Data\AzureDevTesting.Data.csproj" />
-    <ProjectReference Include="..\DataAccess\AzureDevTesting.Business.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
